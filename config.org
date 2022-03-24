@@ -1,4 +1,5 @@
 #+TITLE: My ~emacs~ configurations.
+#+STARTUP: overview
 
 [[file:patchi.png]]
 
@@ -146,7 +147,7 @@ Get prettier bullets and generally a prettier inteface.
     (define-advice racket--common-variables (:after () font-lock-level)
       (setcar font-lock-defaults racket-font-lock-keywords-level-2)))
 #+end_src
-** Geiser
+** Scheme
 #+begin_src elisp
   (use-package geiser
     :hook ((scheme-mode . prettify-lambda)
@@ -171,6 +172,18 @@ Get prettier bullets and generally a prettier inteface.
 #+begin_src elisp
   (use-package sh-script
   :hook (sh-mode . company-mode))
+#+end_src
+** Paredit for structural editing of Lisp codes
+#+begin_src elisp
+  (use-package paredit
+      :init
+      (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+      (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+      (add-hook 'racket-mode-hook           #'enable-paredit-mode)
+      (add-hook 'clojure-mode-hook           #'enable-paredit-mode)
+      (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+      (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+      (add-hook 'scheme-mode-hook           #'enable-paredit-mode))
 #+end_src
 ** The ~company~ completion framework
 #+begin_src elisp
