@@ -1,0 +1,254 @@
+#+TITLE: My ~emacs~ configurations.
+
+* My ~emacs~ configurations.
+
+[[file:patchi.png]]
+
+
+* Improve startup time
+Make it so garbage collection doesn't trigger as often during startup.
+#+begin_src elisp
+  (setq gc-cons-threshold most-positive-fixnum
+	gc-cons-percentage 0.6)
+  (add-hook 'after-init-hook (lambda () (setq gc-cons-threshold 16777216 gc-cons-percentage 0.1)))
+#+end_src
+* Bootstrap the ~straight.el~ package manager
+#+begin_src elisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	(bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+	  (url-retrieve-synchronously
+	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	   'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+  (straight-use-package 'use-package)
+  (setq straight-use-package-by-default t)
+#+end_src
+
+Set up repositories for downloading packages.
+#+begin_src elisp
+  (require 'package)
+  (setq package-archives
+	'(("gnu" . "https://mirrors.163.com/elpa/gnu/")
+	  ("melpa" . "https://melpa.org/packages/")
+	  ("non-gnu" . "https://elpa.nongnu.org/nongnu/")))
+#+end_src
+* Change default ~GUI~ settings
+#+begin_src elisp
+(toggle-scroll-bar -1)
+(global-visual-line-mode 1)
+#+end_src
+* Set up fonts
+#+begin_src elisp
+  (set-frame-font "Fira Code 11" nil t)
+  (set-fontset-font t 'greek (font-spec :family "EB Garamond" :height 145))
+
+  (custom-theme-set-faces
+   'user
+   '(fixed-pitch ((t (:family "Fira Code" :height 130))))
+   '(variable-pitch ((t (:family "EB Garamond" :height 145))))
+   `(org-quote ((t (:inherit variable-pitch))))
+   `(org-block ((t (:height 115 :inherit fixed-pitch))))
+   `(org-document-title ((t (:inherit default ,@(x-list-fonts "EB Garamond") :height 1.2 :weight bold)))))
+#+end_src
+* Custom utility functions
+** Visit files with root priveliges.
+#+begin_src elisp
+  (defun sudo-edit (&optional arg)
+    "Edit currently visited file as root. With a prefix `arg' prompt for a file to visit.
+    Will also prompt for a file to visit if current buffer is not visiting a file."
+    (interactive "P")
+    (if (or arg (not buffer-file-name))
+	(find-files (concat "/sudo:root@localhost:" (read-file-name "Find file(as root): ")))
+      (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+#+end_src
+** Suppress the confirmation prompt when killing an unmodified buffer.
+#+begin_src elisp
+  (defun kill-current-buffer ()
+    "Kills the current buffer."
+    (interactive)
+    (kill-buffer (current-buffer)))
+#+end_src
+* Use the ~modus~ themes
+#+begin_src elisp
+  (use-package modus-themes
+  :init
+  (setq modus-themes-italic-constructs t
+	modus-themes-bold-constructs nil
+	modus-themes-intense-markup t
+	modus-themes-region '(bg-only no-extend)
+	modus-themes-syntax '(faint))
+  (modus-themes-load-themes)
+  :config (modus-themes-load-operandi)
+  :bind ("<f5>" . modus-themes-toggle)
+  :custom-face
+  '(font-lock-function-name-face ((t (:italic t))))
+  '(font-lock-variable-name-face ((t (:italic t)))))
+#+end_src
+* Org mode
+#+begin_src elisp
+  (add-hook 'org-mode-hook 'variable-pitch-mode)
+  (setq org-startup-with-inline-images t)
+  (setq org-hide-emphasis-markers t)
+#+end_src
+
+Use prettier bullets.
+#+begin_src elisp
+  (use-package org-bullets
+  :custom (org-bullets-bullet-list '("☐" "◉" "✿" "❀"))
+  :hook (org-mode . org-bullets-mode))
+#+end_src
+* Programming languages
+** C
+#+begin_src elisp
+  (use-package cc-mode
+    :config
+    (setq c-default-style "linux"
+	  c-basic-offset 2))
+#+end_src
+** Emacs Lisp
+#+begin_src elisp
+  (use-package elisp-mode
+    :straight nil
+    :hook (emacs-lisp-mode . company-mode))
+#+end_src
+** Common Lisp
+#+begin_src elisp
+  (use-package sly
+    :hook (((lisp-mode sly-mrepl-mode) . company-mode)
+	   ((lisp-mode sly-mrepl-mode) . prettify-lambda))
+    :config (setq inferior-lisp-program "sbcl"))
+
+  (use-package sly-macrostep)
+#+end_src
+** Racket
+#+begin_src elisp
+  (use-package racket-mode
+    :mode "\\.rkt\\'"
+    :hook ((racket-mode . racket-xp-mode)
+	   ((racket-mode racket-repl-mode) . company-mode)
+	   ((racket-mode racket-repl-mode) . prettify-lambda))
+    :init (setq auto-mode-alist (rassq-delete-all 'racket-mode auto-mode-alist))
+    :config
+    (define-advice racket--common-variables (:after () font-lock-level)
+      (setcar font-lock-defaults racket-font-lock-keywords-level-2)))
+#+end_src
+** Geiser
+#+begin_src elisp
+  (use-package geiser
+    :hook ((scheme-mode . prettify-lambda)
+	   (scheme-mode . company-mode))
+    :init
+    (setq geiser-default-implementation 'guile)
+    (setq geiser-active-implementations '(guile))
+    :config (setq geiser-guile-binary "guile"))
+
+  (use-package geiser-guile)
+#+end_src
+** Clojure
+#+begin_src elisp
+  (use-package clojure-mode
+    :hook ((clojure-mode cider-repl-mode) . company-mode)
+    :config
+    (setq cider-prompt-for-symbol nil))
+
+  (use-package cider)
+#+end_src
+** Shell
+#+begin_src elisp
+  (use-package sh-script
+  :hook (sh-mode . company-mode))
+#+end_src
+** The ~company~ completion framework
+#+begin_src elisp
+  (use-package company
+    :config
+    (setq company-idle-delay 0
+	  company-minimum-prefix-length 4))
+#+end_src
+** Prettify the =λ= character in Lisp
+#+begin_src elisp
+  (defun prettify-lambda ()
+    (progn (setq prettify-symbols-alist
+		 '(("lambda" . 955)
+		   ("LAMBDA" . 955)
+		   ("fn"     . 955)))
+	   (prettify-symbols-mode 1)))
+#+end_src
+* Definitions of various packages
+** Keep the ~emacs~ directory clean
+Change the default directory to keep unwanted temporary files out of the main =~/.emacs.d= directory.
+#+begin_src elisp
+  (setq user-emacs-directory (expand-file-name "~/.cache/emacs/"))
+
+  (use-package no-littering)
+  (setq no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory))
+  (setq no-littering-var-directory (expand-file-name "var/" user-emacs-directory))
+  (setq auto-save-file-name-transforms
+	`((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  #+end_src
+
+#+begin_src elisp
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file t t)
+#+end_src
+** Git porcelain
+#+begin_src elisp
+  (use-package magit
+    :config (setq magit-push-always-verify nil))
+#+end_src
+** Incremental search system & annotations in the minibuffer
+#+begin_src elisp
+  (use-package selectrum
+  :init (selectrum-mode +1)
+  (global-set-key (kbd "C-x C-z") #'selectrum-repeat))
+
+  (use-package marginalia
+  :bind (:map minibuffer-local-map ("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
+#+end_src
+** Package management for ~guix~
+#+begin_src elisp
+  (use-package guix)
+#+end_src
+** A convenient timer package
+#+begin_src elisp
+  (straight-use-package
+   '(tmr :type git :host gitlab :repo "protesilaos/tmr.el"))
+#+end_src
+** Completion/hinting for keybindings
+#+begin_src elisp
+  (use-package which-key)
+#+end_src
+** Display hex colors
+#+begin_src elisp
+  (use-package rainbow-mode)
+#+end_src
+** Read PDFs
+#+begin_src elisp
+    (use-package pdf-tools
+    :magic ("%PDF" . pdf-view-mode)
+    :init (setq-default pdf-view-display-size 'fit-height)
+    :config
+    (pdf-tools-install))
+
+  (use-package pdf-view-restore
+    :hook (pdf-view-mode . pdf-view-restore-mode))
+#+end_src
+** Convenient mode for writing text
+#+begin_src elisp
+  (use-package olivetti
+    :hook (org-mode . olivetti-mode))
+#+end_src
+** Display line numbers in programming modes
+#+begin_src elisp
+  (use-package linum-relative
+    :hook (prog-mode . linum-relative-mode)
+    :init (setq linum-relative-backend 'display-line-numbers-mode))
+#+end_src
