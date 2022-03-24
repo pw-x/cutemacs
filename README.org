@@ -1,0 +1,5 @@
+#+TITLE: Emacs readme for Github.
+
+[[file:patchi.png]]
+
+Repository to hold my reproducible =emacs= configurations.
