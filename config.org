@@ -89,18 +89,28 @@ Set up repositories for downloading packages.
   '(font-lock-variable-name-face ((t (:italic t)))))
 #+end_src
 * Org mode
+
+Hooks for the main Org mode.
 #+begin_src elisp
   (add-hook 'org-mode-hook 'variable-pitch-mode)
   (setq org-startup-with-inline-images t)
   (setq org-hide-emphasis-markers t)
 #+end_src
 
-Use prettier bullets.
+Get prettier bullets and generally a prettier inteface.
 #+begin_src elisp
-  (use-package org-bullets
-  :custom (org-bullets-bullet-list '("☐" "◉" "✿" "❀"))
-  :hook (org-mode . org-bullets-mode))
+  (use-package org-modern
+  :hook ((org-mode . org-modern-mode))
+  :config
+  (setq org-modern-label-border 1)
+  (setq org-modern-variable-pitch nil)
+  (setq org-modern-timestamp t)
+  (setq org-modern-table t)
+  (setq org-modern-table-vertical 1)
+  (setq org-modern-table-horizontal 0)
+  (setq org-modern-list '((?+ . "•") (?- . "–") (?* . "◦"))))
 #+end_src
+
 * Programming languages
 ** C
 #+begin_src elisp
