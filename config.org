@@ -1,7 +1,5 @@
 #+TITLE: My ~emacs~ configurations.
 
-* My ~emacs~ configurations.
-
 [[file:patchi.png]]
 
 
