@@ -39,8 +39,9 @@ Set up repositories for downloading packages.
 #+end_src
 * Change default ~GUI~ settings
 #+begin_src elisp
-(toggle-scroll-bar -1)
-(global-visual-line-mode 1)
+  (toggle-scroll-bar -1)
+  (global-visual-line-mode 1)
+  (setq use-short-answers t)
 #+end_src
 * Set up fonts
 #+begin_src elisp
@@ -72,6 +73,8 @@ Set up repositories for downloading packages.
     "Kills the current buffer."
     (interactive)
     (kill-buffer (current-buffer)))
+
+  (global-set-key (kbd "C-x k") 'kill-current-buffer)
 #+end_src
 * Use the ~modus~ themes
 #+begin_src elisp
@@ -253,11 +256,10 @@ Change the default directory to keep unwanted temporary files out of the main =~
 #+end_src
 ** Read PDFs
 #+begin_src elisp
-    (use-package pdf-tools
+  (use-package pdf-tools
+    :straight nil
     :magic ("%PDF" . pdf-view-mode)
-    :init (setq-default pdf-view-display-size 'fit-height)
-    :config
-    (pdf-tools-install))
+    :init (setq-default pdf-view-display-size 'fit-height))
 
   (use-package pdf-view-restore
     :hook (pdf-view-mode . pdf-view-restore-mode))
