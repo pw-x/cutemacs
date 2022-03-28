@@ -42,6 +42,8 @@ Set up repositories for downloading packages.
   (toggle-scroll-bar -1)
   (global-visual-line-mode 1)
   (setq use-short-answers t)
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
 #+end_src
 * Set up fonts
 #+begin_src elisp
