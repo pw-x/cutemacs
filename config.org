@@ -98,6 +98,9 @@ A convenience macro for defining the opener functions.
   (make-opener org-todo "~/Org/todo.org" "C-c f n")
   (make-opener org-ideas "~/Org/ideas.org" "C-c f i")
   (make-opener org-scratchpad "~/Org/scratchpad.org" "C-c f a")
+
+  (make-opener guix-system "~/.config/guix/system.scm" "C-c f s")
+  (make-opener guix-channel "~/.config/guix/channels.scm" "C-c f c")
 #+end_src
 
 * Use the ~modus~ themes
