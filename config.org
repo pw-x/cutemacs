@@ -78,6 +78,28 @@ Set up repositories for downloading packages.
 
   (global-set-key (kbd "C-x k") 'kill-current-buffer)
 #+end_src
+** Open commonly visited files
+A convenience macro for defining the opener functions.
+#+begin_src elisp
+  (defmacro make-opener (file-name file-path &optional leader-binding)
+    (let ((func-name (read (concat (symbol-name file-name) "-open")))
+	  (docstr    (concat "Open" file-path "for editing.")))
+      `(progn
+	 (defun ,func-name ()
+	   ,docstr
+	   (interactive)
+	   (find-file ,file-path))
+	 (global-set-key (kbd ,leader-binding) (quote ,func-name)))))
+#+end_src
+
+#+begin_src elisp
+  (make-opener emacs-config "~/.emacs.d/config.org" "C-c f e")
+
+  (make-opener org-todo "~/Org/todo.org" "C-c f n")
+  (make-opener org-ideas "~/Org/ideas.org" "C-c f i")
+  (make-opener org-scratchpad "~/Org/scratchpad.org" "C-c f a")
+#+end_src
+
 * Use the ~modus~ themes
 #+begin_src elisp
   (use-package modus-themes
