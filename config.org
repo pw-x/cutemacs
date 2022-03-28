@@ -210,7 +210,7 @@ Get prettier bullets and generally a prettier inteface.
       (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
       (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
       (add-hook 'racket-mode-hook           #'enable-paredit-mode)
-      (add-hook 'clojure-mode-hook           #'enable-paredit-mode)
+      (add-hook 'clojure-mode-hook          #'enable-paredit-mode)
       (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
       (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
       (add-hook 'scheme-mode-hook           #'enable-paredit-mode))
@@ -256,13 +256,13 @@ Change the default directory to keep unwanted temporary files out of the main =~
 ** Incremental search system & annotations in the minibuffer
 #+begin_src elisp
   (use-package selectrum
-  :init (selectrum-mode +1)
-  (global-set-key (kbd "C-x C-z") #'selectrum-repeat))
+    :init (selectrum-mode +1)
+    (global-set-key (kbd "C-x C-z") #'selectrum-repeat))
 
   (use-package marginalia
-  :bind (:map minibuffer-local-map ("M-A" . marginalia-cycle))
-  :init
-  (marginalia-mode))
+    :bind (:map minibuffer-local-map ("M-A" . marginalia-cycle))
+    :init
+    (marginalia-mode))
 #+end_src
 ** Package management for ~guix~
 #+begin_src elisp
