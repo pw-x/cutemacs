@@ -106,6 +106,20 @@ A convenience macro for defining the opener functions.
 #+begin_src elisp
   (save-place-mode 1)
 #+end_src
+** Screenshotting utilities
+#+begin_src elisp
+  (defun maim ()
+    (interactive)
+    (shell-command "maim -s | xclip -selection clipboard -t image/png"))
+
+  (defun maim-tee ()
+    (interactive)
+    (shell-command "maim -s | tee ~/Screenshots/maim/$(date +%s).png | xclip -selection clipboard -t image/png"))
+
+  (defun scrot ()
+    (interactive)
+    (shell-command "scrot -d 3"))
+#+end_src
 * Use the ~modus~ themes
 #+begin_src elisp
   (use-package modus-themes
