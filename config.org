@@ -102,7 +102,10 @@ A convenience macro for defining the opener functions.
   (make-opener guix-system "~/.config/guix/system.scm" "C-c f s")
   (make-opener guix-channel "~/.config/guix/channels.scm" "C-c f c")
 #+end_src
-
+** Save point position in buffers
+#+begin_src elisp
+  (save-place-mode 1)
+#+end_src
 * Use the ~modus~ themes
 #+begin_src elisp
   (use-package modus-themes
@@ -128,10 +131,15 @@ Hooks for the main Org mode.
   (setq org-hide-emphasis-markers t)
 #+end_src
 
+#+begin_src elisp
+  (use-package org-pdftools
+    :hook (org-mode . org-pdftools-setup-link))
+#+end_src
+
 Get prettier bullets and generally a prettier inteface.
 #+begin_src elisp
   (use-package org-modern
-  :hook ((org-mode . org-modern-mode))
+  :hook (org-mode . org-modern-mode)
   :config
   (setq org-modern-label-border 1)
   (setq org-modern-variable-pitch nil)
