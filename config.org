@@ -146,8 +146,8 @@ Hooks for the main Org mode.
 #+end_src
 
 #+begin_src elisp
-  (use-package org-pdftools
-    :hook (org-mode . org-pdftools-setup-link))
+;;  (use-package org-pdftools
+;;    :hook (org-mode . org-pdftools-setup-link))
 #+end_src
 
 Get prettier bullets and generally a prettier inteface.
@@ -297,7 +297,8 @@ Change the default directory to keep unwanted temporary files out of the main =~
 #+end_src
 ** Completion/hinting for keybindings
 #+begin_src elisp
-  (use-package which-key)
+  (use-package which-key
+    :init (which-key-mode))
 #+end_src
 ** Display hex colors
 #+begin_src elisp
