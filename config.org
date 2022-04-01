@@ -44,6 +44,8 @@ Set up repositories for downloading packages.
   (setq use-short-answers t)
   (menu-bar-mode -1)
   (tool-bar-mode -1)
+  (display-time-mode 1)
+  (setq display-time-day-and-date t)
 #+end_src
 * Set up fonts
 #+begin_src elisp
