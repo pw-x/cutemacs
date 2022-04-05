@@ -167,6 +167,20 @@ Get prettier bullets and generally a prettier inteface.
   (setq org-modern-list '((?+ . "•") (?- . "–") (?* . "◦"))))
 #+end_src
 
+* LaTeX
+#+begin_src elisp
+  (use-package auctex
+    :hook (LaTeX-mode . variable-pitch-mode)
+    :init
+    ;; Preview defaults.
+    (set-default 'preview-scale-function 1.2)
+    (setq preview-auto-cache-preamble t)
+    (setq font-latex-fontify-script nil)
+    ;; Compilation settings.
+    (setq TeX-command-Show "LaTeX")
+    (setq TeX-engine 'xetex))
+#+end_src
+
 * Programming languages
 ** C
 #+begin_src elisp
@@ -320,7 +334,7 @@ Change the default directory to keep unwanted temporary files out of the main =~
 ** Convenient mode for writing text
 #+begin_src elisp
   (use-package olivetti
-    :hook (org-mode . olivetti-mode))
+    :hook ((org-mode latex-mode text-mode) . olivetti-mode))
 #+end_src
 ** Display line numbers in programming modes
 #+begin_src elisp
