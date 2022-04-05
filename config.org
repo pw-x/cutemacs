@@ -50,7 +50,8 @@ Set up repositories for downloading packages.
 * Set up fonts
 #+begin_src elisp
   (set-frame-font "Fira Code 11" nil t)
-  (set-fontset-font t 'greek (font-spec :family "EB Garamond" :height 145))
+  (set-fontset-font t 'greek (font-spec :family "EB Garamond" :size 20))
+  (set-fontset-font t 'cyrillic (font-spec :family "EB Garamond" :height 145))
 
   (custom-theme-set-faces
    'user
