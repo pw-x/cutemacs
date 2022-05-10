@@ -24,10 +24,34 @@
 (exwm-input-set-key (kbd "s-t") #'exwm-layout-toggle-fullscreen)
 
 ;; Set up keybindings for switching workspaces.
-(defun exwm-make-ws-switch (n)
+(defun exwm/make-ws-switch (n)
   (exwm-input-set-key (kbd (format "s-%d" n)) `(lambda () (interactive) (exwm-workspace-switch-create ,n))))
+(cl-loop for n to 9 do (exwm/make-ws-switch n))
 
-(cl-loop for n to 9 do (exwm-make-ws-switch n))
+;; Set up functions for quickly opening applications.
+(defun exwm/run-in-background (command)
+  (let ((command-parts (split-string command "[ ]+")))
+    (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
+
+(defun exwm/firefox ()
+  (interactive)
+  (exwm/run-in-background "firefox")
+  (exwm-workspace-switch-create 1))
+
+(defun exwm/nautilus ()
+  (interactive)
+  (exwm/run-in-background "nautilus")
+  (exwm-workspace-switch-create 3))
+
+(defun exwm/libreoffice ()
+  (interactive)
+  (exwm/run-in-background "libreoffice")
+  (exwm-workspace-switch-create 0))
+
+(defun exwm/qutebrowser ()
+  (interactive)
+  (exwm/run-in-background "qutebrowser")
+  (exwm-workspace-switch-create 2))
 
 ;; `C-q` will make the next key passthrough to emacs.
 (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
@@ -39,11 +63,17 @@
    ([?\s-q] . kill-current-buffer)
 
    ;; Move between windows.
-   ([?\s-j] . windmove-left)
-   ([?\s-k] . windmove-right)
-   ([?\s-l] . windmove-up)
-   ([?\s-h] . windmove-down)
+   ;; ([?\s-j] . windmove-left)
+   ;; ([?\s-k] . windmove-right)
+   ;; ([?\s-l] . windmove-up)
+   ;; ([?\s-h] . windmove-down)
 
+   ;; App-launchers.
+   ([?\s-b] . exwm/firefox)
+   ([?\s-z] . exwm/qutebrowser)
+   ([?\s-f] . exwm/nautilus)
+   ([?\s-o] . exwm/libreoffice)
+   
    ;; Switch workspace.
    ([?\s-w] . exwm-workspace-switch)
    ([?\s-`] . (lambda () (interactive) (exwm-workspace-switch 0)))))
