@@ -37,6 +37,10 @@ Set up repositories for downloading packages.
 	  ("melpa" . "https://melpa.org/packages/")
 	  ("non-gnu" . "https://elpa.nongnu.org/nongnu/")))
 #+end_src
+* Use ~exwm~ as the window manager
+  #+begin_src elisp
+    (load "~/.emacs.d/exwm.el" t t)
+  #+end_src
 * Change default ~GUI~ settings
 #+begin_src elisp
   (toggle-scroll-bar -1)
@@ -51,7 +55,7 @@ Set up repositories for downloading packages.
 #+begin_src elisp
   (set-frame-font "Fira Code 11" nil t)
   (set-fontset-font t 'greek (font-spec :family "EB Garamond" :size 20))
-  (set-fontset-font t 'cyrillic (font-spec :family "EB Garamond" :height 145))
+  (set-fontset-font t 'cyrillic (font-spec :family "EB Garamond" :size 20))
 
   (custom-theme-set-faces
    'user
@@ -60,6 +64,22 @@ Set up repositories for downloading packages.
    `(org-quote ((t (:inherit variable-pitch))))
    `(org-block ((t (:height 115 :inherit fixed-pitch))))
    `(org-document-title ((t (:inherit default ,@(x-list-fonts "EB Garamond") :height 1.2 :weight bold)))))
+#+end_src
+* Use the ~modus~ themes
+#+begin_src elisp
+  (use-package modus-themes
+  :init
+  (setq modus-themes-italic-constructs t
+	modus-themes-bold-constructs nil
+	modus-themes-intense-markup t
+	modus-themes-region '(bg-only no-extend)
+	modus-themes-syntax '(faint))
+  (modus-themes-load-themes)
+  :config (modus-themes-load-operandi)
+  :bind ("<f5>" . modus-themes-toggle)
+  :custom-face
+  '(font-lock-function-name-face ((t (:italic t))))
+  '(font-lock-variable-name-face ((t (:italic t)))))
 #+end_src
 * Custom utility functions
 ** Visit files with root priveliges.
@@ -123,22 +143,6 @@ A convenience macro for defining the opener functions.
   (defun scrot ()
     (interactive)
     (shell-command "scrot -d 3"))
-#+end_src
-* Use the ~modus~ themes
-#+begin_src elisp
-  (use-package modus-themes
-  :init
-  (setq modus-themes-italic-constructs t
-	modus-themes-bold-constructs nil
-	modus-themes-intense-markup t
-	modus-themes-region '(bg-only no-extend)
-	modus-themes-syntax '(faint))
-  (modus-themes-load-themes)
-  :config (modus-themes-load-operandi)
-  :bind ("<f5>" . modus-themes-toggle)
-  :custom-face
-  '(font-lock-function-name-face ((t (:italic t))))
-  '(font-lock-variable-name-face ((t (:italic t)))))
 #+end_src
 * Org mode
 
@@ -327,7 +331,9 @@ Change the default directory to keep unwanted temporary files out of the main =~
   (use-package pdf-tools
     :straight nil
     :magic ("%PDF" . pdf-view-mode)
-    :init (setq-default pdf-view-display-size 'fit-height))
+    :init
+    (setq-default pdf-view-display-size 'fit-height)
+    (setq-default pdf-view-midnight-colors '("#ffffff" . "#000000")))
 
   (use-package pdf-view-restore
     :hook (pdf-view-mode . pdf-view-restore-mode))
