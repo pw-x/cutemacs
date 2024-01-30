@@ -57,22 +57,3 @@
 ;; Use Org mode for writing the rest of the config.
 (require 'org)
 (org-babel-load-file (expand-file-name "config.org" user-emacs-directory))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("f5661fd54b1e60a4ae373850447efc4158c23b1c7c9d65aa1295a606278da0f8" default))
- '(warning-suppress-types '((comp))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(fixed-pitch ((t (:family "SF Mono" :height 130))))
- '(org-block ((t (:height 115 :inherit fixed-pitch))))
- '(org-document-title ((t (:inherit default "-APPL-New York-extrabold-italic-normal-*-*-*-*-*-*-0-iso10646-1" "-APPL-New York-semibold-normal-normal-*-*-*-*-*-*-0-iso10646-1" "-APPL-New York-semibold-italic-normal-*-*-*-*-*-*-0-iso10646-1" "-APPL-New York-regular-italic-normal-*-*-*-*-*-*-0-iso10646-1" "-APPL-New York-regular-normal-normal-*-*-*-*-*-*-0-iso10646-1" "-APPL-New York-black-italic-normal-*-*-*-*-*-*-0-iso10646-1" "-APPL-New York-medium-italic-normal-*-*-*-*-*-*-0-iso10646-1" "-APPL-New York-bold-italic-normal-*-*-*-*-*-*-0-iso10646-1" "-APPL-New York-bold-normal-normal-*-*-*-*-*-*-0-iso10646-1" "-APPL-New York-medium-normal-normal-*-*-*-*-*-*-0-iso10646-1" "-APPL-New York-black-normal-normal-*-*-*-*-*-*-0-iso10646-1" "-APPL-New York-extrabold-normal-normal-*-*-*-*-*-*-0-iso10646-1" :height 1.2 :weight bold))))
- '(org-quote ((t (:inherit variable-pitch))))
- '(variable-pitch ((t (:family "New York" :height 1.2 :weight regular)))))

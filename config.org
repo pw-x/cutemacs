@@ -39,10 +39,41 @@
    `(org-block ((t (:height 115 :inherit fixed-pitch))))
    `(org-document-title ((t (:inherit default ,@(x-list-fonts "New York") :height 1.2 :weight bold)))))
 #+end_src
+* Fix weird =compat= bug
+#+begin_src elisp
+(use-package compat :elpaca (:host github :repo "emacs-compat/compat"))
+#+end_src
+* Keep the emacs directory clean.
+Change the default user emacs directory to keep unwanted things out of ~~/.emacs.d~.
+#+begin_src elisp
+(setf user-emacs-directory (expand-file-name "~/.cache/emacs/")
+      url-history-file (expand-file-name "url/history" user-emacs-directory))
+#+end_src
 
+Use =no-littering= to automatically set common paths to the new user emacs directory.
+#+begin_src elisp
+  (use-package no-littering
+    :config 
+    (setf no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory))
+    (setf no-littering-var-directory (expand-file-name "var/" user-emacs-directory))
+    (setf auto-save-file-name-transforms
+	  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+  (elpaca-wait)
+
+  (require 'recentf)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
+#+end_src
+
+Place =customize-*= blocks into a separate file
+#+begin_src emacs-lisp
+  (setf custom-file (no-littering-expand-etc-file-name "custom.el"))
+  (add-hook 'elpaca-after-init-hook (lambda () (load custom-file 'noerror)))
+  (load custom-file t t)
+#+end_src
 * Use the =modus= themes.
 #+begin_src elisp
-  (use-package modus-themes :demand t
+  (use-package modus-themes
     :bind ("<f5>" . #'modus-themes-toggle)
     :config (load-theme 'modus-operandi :no-confirm)
     :init
@@ -63,22 +94,22 @@
 
 * Use =vertico= for completion in minibuffers.
 #+begin_src elisp
-  (use-package vertico :demand t
+  (use-package vertico
     :init (vertico-mode))
   ;; Add comments to the completion options.
-  (use-package marginalia :demand t
+  (use-package marginalia
     :init (marginalia-mode))
 #+end_src
 
 * Use =lispy= for editing Lisp languages.
 #+begin_src elisp
-  (use-package lispy :demand t
+  (use-package lispy
     :hook (emacs-lisp-mode racket-mode))
 #+end_src
 
 * Support the =Racket= programming language.
 #+begin_src elisp
-  (use-package racket-mode :demand t
+  (use-package racket-mode
     :hook
     ((racket-mode racket-repl-mode) . prettify-lambda)
     ((racket-mode racket-repl-mode) . company-mode))
@@ -86,7 +117,7 @@
 
 * Use the =company= completion framework for programming.
 #+begin_src elisp
-  (use-package company :demand t
+  (use-package company
     :config
     (setq company-idle-delay 0)
     (setq company-minimum-prefix-length 4))
@@ -102,22 +133,21 @@
 	   (prettify-symbols-mode 1)))
 #+end_src
 
-*  Use =magit= for =git= integration.
+* Use =magit= for =git= integration.
 #+begin_src elisp
-  (use-package seq :demand t)
-  (use-package magit :after transient
-    :config (setq magit-push-always-verify nil))
-#+end_src
-* Convenient mode for writing text
-#+begin_src elisp
-  (use-package olivetti :demand t
-    :hook ((org-mode latex-mode text-mode) . olivetti-mode))
+  (use-package magit :after seq
+   :config (setq magit-push-always-verify nil))
 #+end_src
 * Display hex codes as color
 #+begin_src elisp
-  (use-package rainbow-mode :demand t)
+(use-package rainbow-mode :elpaca (:host github :repo "emacsmirror/rainbow-mode"))
+#+end_src elisp
+* Convenient mode for writing text
+#+begin_src elisp
+  (use-package olivetti
+    :hook ((org-mode latex-mode text-mode) . olivetti-mode))
 #+end_src
 * Use =pdf=tools= for reading PDFs.
 #+begin_src elisp
-  (use-package pdf-tools :demand t)
+  (use-package pdf-tools)
 #+end_src
