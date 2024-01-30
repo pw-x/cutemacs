@@ -1,5 +1,8 @@
 config.el
 
-straight
+elpaca
 eln-cache
 transient
+places
+
+*.*~
